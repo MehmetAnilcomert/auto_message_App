@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WhatsApp Admin Panel</title>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .status {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+      .ready {
+        background: #d4edda;
+        color: #155724;
+      }
+      .not-ready {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      textarea {
+        width: 100%;
+        height: 100px;
+        margin: 10px 0;
+      }
+      input,
+      button {
+        margin: 5px 0;
+        padding: 10px;
+      }
+      button {
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .result {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📱 WhatsApp Admin Panel</h1>
+      <div id="status" class="status not-ready">Durum: Yükleniyor...</div>
+      <div id="form-container"></div>
+    </div>
+
+    <script>
+      const statusTexts = {
+        pending: "⏳ Başlatılıyor...",
+        qr_generated: "📱 QR kodu oluşturuldu",
+        authenticating: "🔐 Kimlik doğrulanıyor...",
+        ready: "✅ Hazır!",
+        failed: "❌ Bağlantı başarısız",
+      };
+
+      function getStatusText(status) {
+        return statusTexts[status] || status;
+      }
+
+      async function fetchStatus() {
+        const res = await fetch("/whatsapp-status");
+        const status = await res.json();
+
+        const statusDiv = document.getElementById("status");
+        statusDiv.className =
+          "status " + (status.ready ? "ready" : "not-ready");
+        statusDiv.innerHTML =
+          "<strong>Durum:</strong> " + getStatusText(status.authStatus);
+
+        const formContainer = document.getElementById("form-container");
+        if (status.ready) {
+          formContainer.innerHTML = `
+        <h2>Mesaj Gönder</h2>
+        <form id="messageForm">
+          <input type="text" id="firstName" placeholder="Ad" required>
+          <input type="text" id="lastName" placeholder="Soyad" required>
+          <input type="tel" id="phone" placeholder="Telefon (5551234567)" required>
+          <textarea id="message" placeholder="Mesaj içeriği" required></textarea>
+          <button type="submit">📤 Mesaj Gönder</button>
+        </form>
+        <div id="result"></div>
+      `;
+          const form = document.getElementById("messageForm");
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const person = {
+              first_name: document.getElementById("firstName").value,
+              last_name: document.getElementById("lastName").value,
+              phone_number: document.getElementById("phone").value,
+              custom_message: document.getElementById("message").value,
+            };
+            const result = document.getElementById("result");
+            result.innerHTML = "<p>⏳ Gönderiliyor...</p>";
+            try {
+              const response = await fetch("/send-birthday-message", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ person }),
+              });
+              const data = await response.json();
+              result.className =
+                "result " + (data.success ? "success" : "error");
+              result.innerHTML = data.success
+                ? "✅ Mesaj başarıyla gönderildi!"
+                : "❌ Hata: " + (data.error || "Bilinmeyen hata");
+            } catch (error) {
+              result.className = "result error";
+              result.innerHTML = "❌ Bağlantı hatası: " + error.message;
+            }
+          });
+        } else {
+          formContainer.innerHTML = `<p><a href="/qr">🔗 QR kod sayfasına git</a></p>`;
+        }
+      }
+
+      fetchStatus();
+      setInterval(fetchStatus, 5000);
+    </script>
+  </body>
+</html>
