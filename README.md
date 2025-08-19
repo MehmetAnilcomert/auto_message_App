@@ -111,30 +111,13 @@ text
 </div>
 
 <div class="usage-card">
-  <h3>Yönetim Paneli</h3>
+  <h3>Whatsapp bağlantısı yapma ve mesaj atma sayfaları</h3>
   <div class="features-grid">
     <div class="feature">
       <div class="feature-icon">📊</div>
       <div class="feature-content">
-        <strong>Dashboard:</strong> Sistem durumu ve istatistikler
-      </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">👥</div>
-      <div class="feature-content">
-        <strong>Kişi Yönetimi:</strong> Rehber ve grupları yönetme
-      </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📨</div>
-      <div class="feature-content">
-        <strong>Mesaj Geçmişi:</strong> Gönderilen mesajların kaydı
-      </div>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">⚙️</div>
-      <div class="feature-content">
-        <strong>Ayarlar:</strong> Sistem yapılandırmaları
+        <strong>Qr ile bağlantı gerçekleştirme</strong> 
+        <strong>MEsaj gönderebilme</strong> 
       </div>
     </div>
   </div>
