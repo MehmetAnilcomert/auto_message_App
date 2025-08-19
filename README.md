@@ -55,56 +55,119 @@ text
 http://localhost:3000
 ```
 
-🎯 Kullanım
-QR Kod ile Bağlanma
-Ana sayfada yer alan "QR Kod Göster" butonuna tıklayın
+<div class="usage-container"> <div class="usage-section"> <h2>🎯 Kullanım</h2>
+text
+<div class="usage-card">
+  <h3>QR Kod ile Bağlanma</h3>
+  <div class="steps">
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        Ana sayfada yer alan "QR Kod Göster" butonuna tıklayın
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        WhatsApp uygulamanızı açın ve "Bağlı Cihazlar" bölümüne girin
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        QR kodu tarayarak bağlantıyı kurun
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        Bağlantı başarılı olduğunda yeşil onay işareti göreceksiniz
+      </div>
+    </div>
+  </div>
+</div>
 
-WhatsApp uygulamanızı açın ve "Bağlı Cihazlar" bölümüne girin
+<div class="usage-card">
+  <h3>Mesaj Gönderme</h3>
+  
+  <div class="message-type">
+    <h4>Tekli Mesaj:</h4>
+    <ul>
+      <li>Yönetim panelinde kişi seçin</li>
+      <li>Özelleştirilmiş mesaj yazın</li>
+      <li>"Gönder" butonuna tıklayın</li>
+    </ul>
+  </div>
+  
+  <div class="message-type">
+    <h4>Toplu Mesaj:</h4>
+    <ul>
+      <li>CSV veya Excel dosyası yükleyin</li>
+      <li>Mesaj şablonu oluşturun</li>
+      <li>Zamanlama ayarlarını yapılandırın</li>
+      <li>"Toplu Gönder" i başlatın</li>
+    </ul>
+  </div>
+</div>
 
-QR kodu tarayarak bağlantıyı kurun
+<div class="usage-card">
+  <h3>Yönetim Paneli</h3>
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">📊</div>
+      <div class="feature-content">
+        <strong>Dashboard:</strong> Sistem durumu ve istatistikler
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">👥</div>
+      <div class="feature-content">
+        <strong>Kişi Yönetimi:</strong> Rehber ve grupları yönetme
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📨</div>
+      <div class="feature-content">
+        <strong>Mesaj Geçmişi:</strong> Gönderilen mesajların kaydı
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">⚙️</div>
+      <div class="feature-content">
+        <strong>Ayarlar:</strong> Sistem yapılandırmaları
+      </div>
+    </div>
+  </div>
+</div>
+</div> <div class="screenshots-section"> <h2>📸 Ekran Görüntüleri</h2>
+text
+<div class="screenshot-card">
+  <h3>Ana Sayfa ve QR Kod Ekranı</h3>
+  <div class="screenshot-placeholder">
+    <img src="screenshots/qr.png" 
+         alt="Ana Sayfa ve QR Kod Arayüzü" class="screenshot-img">
+  </div>
+  <p class="screenshot-desc">Modern ve kullanıcı dostu ana arayüz</p>
+</div>
 
-Bağlantı başarılı olduğunda yeşil onay işareti göreceksiniz
 
-Mesaj Gönderme
-Tekli Mesaj:
 
-Yönetim panelinde kişi seçin
-
-Özelleştirilmiş mesaj yazın
-
-"Gönder" butonuna tıklayın
-
-Toplu Mesaj:
-
-CSV veya Excel dosyası yükleyin
-
-Mesaj şablonu oluşturun
-
-Zamanlama ayarlarını yapılandırın
-
-"Toplu Gönder" i başlatın
-
-Yönetim Paneli
-Dashboard: Sistem durumu ve istatistikler
-
-Kişi Yönetimi: Rehber ve grupları yönetme
-
-Mesaj Geçmişi: Gönderilen mesajların kaydı
-
-Ayarlar: Sistem yapılandırmaları
-
-📸 Ekran Görüntüleri
-Ana Sayfa ve QR Kod Ekranı
-https://via.placeholder.com/800x400/3D3D3D/FFFFFF?text=Ana+Sayfa+ve+QR+Kod+Aray%C3%BCz%C3%BC
-Modern ve kullanıcı dostu ana arayüz
-
-Yönetim Paneli
-https://via.placeholder.com/800x400/2D2D2D/FFFFFF?text=Mesaj+Y%C3%B6netim+Paneli
-Kapsamlı mesaj yönetim ve izleme paneli
-
-Başarılı Bağlantı
-https://via.placeholder.com/400x200/1E5128/FFFFFF?text=Ba%C4%9Flant%C4%B1+Ba%C5%9Far%C4%B1l%C4%B1
-WhatsApp bağlantısının başarıyla kurulduğunu gösteren ekran
+<div class="screenshot-card">
+  <h3>Başarılı Bağlantı</h3>
+  <div class="screenshot-placeholder">
+    <img src="screenshots/qr2.png" 
+         alt="Bağlantı Başarılı" class="screenshot-img">
+  </div>
+  <p class="screenshot-desc">WhatsApp bağlantısının başarıyla kurulduğunu gösteren ekran</p>
+</div>
+<div class="screenshot-card">
+  <h3>Mesaj atma sayfası</h3>
+  <div class="screenshot-placeholder">
+    <img src="screenshots/message.png" 
+         alt="Mesaj Başarılı" class="screenshot-img">
+  </div>
+  <p class="screenshot-desc">Mesaj atma ekranı</p>
+</div>
 
 🏗️ Proje Yapısı
 ```
