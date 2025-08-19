@@ -116,8 +116,8 @@ text
     <div class="feature">
       <div class="feature-icon">📊</div>
       <div class="feature-content">
-        <strong>Qr ile bağlantı gerçekleştirme</strong> 
-        <strong>MEsaj gönderebilme</strong> 
+        <strong>Qr ile bağlantı gerçekleştirme,</strong> 
+        <strong>Mesaj gönderebilme</strong> 
       </div>
     </div>
   </div>
