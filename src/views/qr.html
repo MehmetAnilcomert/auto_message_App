@@ -1,67 +1,252 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-  <title>WhatsApp QR Kod</title>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp QR Kod Bağlantısı</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-    .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: inline-block; }
-    img { border: 5px solid #25D366; border-radius: 10px; margin: 20px 0; }
-    .status { padding: 10px; border-radius: 5px; margin: 20px 0; font-weight: bold; }
-    .pending { background: #fff3cd; color: #856404; }
-    .ready { background: #d4edda; color: #155724; }
-    .failed { background: #f8d7da; color: #721c24; }
-    button { background: #25D366; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 10px; }
-    button:hover { background: #128C7E; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      animation: slideUp 0.6s ease-out;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    h1 { color: white; font-size: 2rem; font-weight: 700; margin-bottom: 30px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .status { padding: 16px 24px; border-radius: 12px; margin: 24px 0; font-weight: 600; font-size: 1.1rem; transition: all 0.3s ease; backdrop-filter: blur(10px); }
+    .pending { background: rgba(255,193,7,0.2); color: #fff3cd; border: 1px solid rgba(255,193,7,0.3); }
+    .ready   { background: rgba(40,167,69,0.2);  color: #d4edda; border: 1px solid rgba(40,167,69,0.3); }
+    .failed  { background: rgba(220,53,69,0.2);   color: #f8d7da; border: 1px solid rgba(220,53,69,0.3); }
+    .qr-container { margin: 30px 0; min-height: 220px; display:flex;flex-direction:column;align-items:center;justify-content:center; }
+    .qr-image { border:4px solid rgba(255,255,255,0.3); border-radius:16px; margin:20px 0; max-width:100%; height:auto; box-shadow:0 10px 30px rgba(0,0,0,0.2); transition: transform .25s, opacity .25s; opacity: 0; }
+    .qr-image.visible { opacity: 1; }
+    .qr-image:hover { transform: scale(1.03); }
+    .qr-placeholder { width:200px;height:200px;background:rgba(255,255,255,0.1);border:2px dashed rgba(255,255,255,0.3);border-radius:16px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);font-size:1.05rem;margin:20px 0; padding:10px; text-align:center; }
+    .loading-spinner { width:40px;height:40px;border:4px solid rgba(255,255,255,0.3);border-top:4px solid white;border-radius:50%;animation: spin 1s linear infinite;margin:20px auto; }
+    @keyframes spin { 0%{transform:rotate(0deg)}100%{transform:rotate(360deg)} }
+    .meta { color: rgba(255,255,255,0.75); font-size:0.9rem; margin-top:6px; }
+    .button-group { display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+    button { background: linear-gradient(135deg,#25D366 0%,#128C7E 100%); color:white; border:none; padding:12px 20px; border-radius:10px; cursor:pointer; font-size:0.95rem; font-weight:600; transition:all .2s; box-shadow:0 4px 12px rgba(37,211,102,0.22); backdrop-filter: blur(6px); }
+    button:hover { transform: translateY(-2px); box-shadow:0 6px 18px rgba(37,211,102,0.32); }
+    .refresh-btn { background: linear-gradient(135deg,#6c757d 0%,#495057 100%); box-shadow:0 4px 12px rgba(108,117,125,0.22); }
+    .info-text { color: rgba(255,255,255,0.8); font-size:0.9rem; margin-top:12px; line-height:1.4; }
+    @media (max-width:480px){ .container{padding:30px 20px;margin:10px;} h1{font-size:1.6rem;} .button-group{flex-direction:column;align-items:center;} button{width:100%;max-width:200px;} }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📱 WhatsApp Bağlantısı</h1>
-    <div id="status" class="status pending">Durum: Yükleniyor...</div>
-    <div id="qr-container"></div>
-    <button onclick="location.reload()">🔄 Yenile</button>
-    <button onclick="refreshAuth()">🔄 Yeni QR Kod</button>
+  <div class="container" role="main" aria-labelledby="page-title">
+    <h1 id="page-title">📱 WhatsApp QR Bağlantısı</h1>
+
+    <div id="status" class="status pending" role="status" aria-live="polite">
+      <span id="status-text">Durum: Yükleniyor...</span>
+    </div>
+
+    <div id="qr-container" class="qr-container" aria-live="polite">
+      <div id="qr-placeholder" class="qr-placeholder">QR kod yükleniyor...</div>
+      <img id="qr-img" class="qr-image" src="" alt="WhatsApp QR Kod" width="250" style="display:none" />
+      <div id="meta" class="meta" aria-hidden="true"></div>
+    </div>
+
+    <div class="button-group">
+      <button id="btn-refresh-page" type="button" title="Sayfayı manuel yenile">🔄 Sayfayı Yenile</button>
+      <button id="btn-refresh-auth" class="refresh-btn" type="button">🔄 Yeni QR Kod</button>
+    </div>
+
+    <div class="info-text">QR kodu WhatsApp uygulamanızla tarayarak bağlantı kurun. Tarama başarılı olunca sayfada onay görünecektir.</div>
   </div>
 
   <script>
+    /* UX-improvements:
+       - Debug UI removed (only console.debug remains).
+       - Adaptive polling: qr_generated=3s, pending/failed=10s, ready=30s.
+       - Avoid full-page reload on refreshAuth.
+       - Update img.src rather than rewrite HTML to reduce flicker.
+    */
+
     const statusTexts = {
       'pending': '⏳ Başlatılıyor...',
       'qr_generated': '📱 QR kodu oluşturuldu, lütfen tarayın',
       'authenticating': '🔐 Kimlik doğrulanıyor...',
-      'ready': '✅ Hazır!',
-      'failed': '❌ Bağlantı başarısız'
+      'ready': '✅ Bağlantı başarılı! Hazır.',
+      'failed': '❌ Bağlantı başarısız oldu'
     };
+
+    let lastQRData = null;
+    let pollingTimer = null;
+    let isFetching = false;
+
+    const statusEl = document.getElementById('status');
+    const statusTextEl = document.getElementById('status-text');
+    const qrImg = document.getElementById('qr-img');
+    const qrPlaceholder = document.getElementById('qr-placeholder');
+    const metaEl = document.getElementById('meta');
+    const btnRefreshPage = document.getElementById('btn-refresh-page');
+    const btnRefreshAuth = document.getElementById('btn-refresh-auth');
+
+    function logDebug(msg, data) {
+      // only visible in console
+      console.debug('[QR_PAGE]', msg, data || '');
+    }
 
     function getStatusText(status) {
       return statusTexts[status] || status;
     }
 
-    async function fetchStatus() {
-      const res = await fetch('/whatsapp-status');
-      const data = await res.json();
-
-      const statusDiv = document.getElementById('status');
-      statusDiv.className = 'status ' + (data.ready ? 'ready' : 'pending');
-      statusDiv.innerText = 'Durum: ' + getStatusText(data.authStatus);
-
-      const qrContainer = document.getElementById('qr-container');
-      if (data.qrCodeImagePath) {
-        qrContainer.innerHTML = `
-          <img src="${data.qrCodeImagePath}" alt="QR Code" />
-          <p><small>QR kod 30 saniye sonra yenilenecek</small></p>
-        `;
+    function isValidBase64(str) {
+      if (typeof str !== 'string') return false;
+      try {
+        if (str.length % 4 !== 0) return false;
+        return /^[A-Za-z0-9+/=\s]+$/.test(str);
+      } catch (err) {
+        return false;
       }
     }
 
-    setInterval(fetchStatus, 5000);
-    fetchStatus();
-
-    function refreshAuth() {
-      fetch('/refresh-auth', { method: 'POST' }).then(() => {
-        setTimeout(() => location.reload(), 3000);
-      });
+    function getQRImageSrc(data) {
+      // Prefer base64 if valid, otherwise use qrCodeImagePath served from public root
+      if (data.qrCode) {
+        const cleaned = data.qrCode.replace(/[^A-Za-z0-9+/=]/g, '');
+        if (isValidBase64(cleaned)) {
+          logDebug('Using base64 QR data');
+          return `data:image/png;base64,${cleaned}`;
+        }
+      }
+      if (data.qrCodeImagePath) {
+        const fileName = data.qrCodeImagePath.split('\\').pop().split('/').pop();
+        return `/${fileName}?t=${Date.now()}`;
+      }
+      return null;
     }
+
+    function shouldShowQRCode(data) {
+      return (data.qrCode || data.qrCodeImagePath) && data.authStatus === 'qr_generated';
+    }
+
+    function showPlaceholder(text) {
+      qrImg.style.display = 'none';
+      qrImg.classList.remove('visible');
+      qrPlaceholder.style.display = 'flex';
+      qrPlaceholder.textContent = text || 'QR kod bekleniyor...';
+      metaEl.textContent = '';
+    }
+
+    function showQRCode(src) {
+      if (!src) {
+        showPlaceholder('QR kaynağı bulunamadı');
+        return;
+      }
+      qrImg.src = src;
+      qrImg.style.display = 'block';
+      // small delay to allow image to load and transition opacity on load event
+      qrImg.onload = () => {
+        qrPlaceholder.style.display = 'none';
+        qrImg.classList.add('visible');
+      };
+      qrImg.onerror = () => {
+        logDebug('QR image failed to load:', src);
+        handleQRError();
+      };
+      // show approximate last update
+      metaEl.textContent = 'Son güncelleme: ' + new Date().toLocaleTimeString();
+    }
+
+    function handleQRError() {
+      showPlaceholder('❌ QR kod yüklenemedi. Yenilemeyi deneyin.');
+    }
+
+    async function fetchStatus() {
+      if (isFetching) return; // prevent overlapping
+      isFetching = true;
+
+      try {
+        const res = await fetch('/whatsapp-status');
+        if (!res.ok) throw new Error('API yanıt vermedi: ' + res.status);
+        const data = await res.json();
+        lastQRData = data;
+        logDebug('Status received', data);
+
+        // Update status UI
+        statusEl.className = 'status ' + (data.ready ? 'ready' : data.authStatus === 'failed' ? 'failed' : 'pending');
+        statusTextEl.textContent = 'Durum: ' + getStatusText(data.authStatus);
+
+        if (shouldShowQRCode(data)) {
+          const qrSrc = getQRImageSrc(data);
+          showQRCode(qrSrc);
+        } else if (data.authStatus === 'ready') {
+          // connected
+          showPlaceholder('✅ Bağlantı Kuruldu!');
+          metaEl.textContent = 'Hazır: ' + new Date().toLocaleTimeString();
+        } else {
+          // pending / authenticating / failed without QR
+          showPlaceholder(getStatusText(data.authStatus));
+        }
+
+        scheduleNextFetch(data.authStatus);
+      } catch (error) {
+        logDebug('Fetch hatası: ' + error.message);
+        statusEl.className = 'status failed';
+        statusTextEl.textContent = 'Durum: ❌ Bağlantı hatası';
+        showPlaceholder('🔌 Sunucuya bağlanılamıyor. Lütfen kontrol edin.');
+        // if network error, try again after a bit
+        scheduleNextFetch('failed');
+      } finally {
+        isFetching = false;
+      }
+    }
+
+    function scheduleNextFetch(authStatus) {
+      // Clear any previous timer
+      if (pollingTimer) clearTimeout(pollingTimer);
+
+      let delay = 10000; // default 10s
+      if (authStatus === 'qr_generated') delay = 3000;   // fast while QR waiting
+      else if (authStatus === 'ready') delay = 30000;   // slow while ready
+      else delay = 10000;                               // pending/failed
+
+      // schedule next fetch
+      pollingTimer = setTimeout(fetchStatus, delay);
+      logDebug('Next fetch scheduled in ' + delay + 'ms (' + authStatus + ')');
+    }
+
+    async function refreshAuth() {
+      try {
+        btnRefreshAuth.disabled = true;
+        btnRefreshAuth.textContent = '⏳ Yenileniyor...';
+        const res = await fetch('/refresh-auth', { method: 'POST' });
+        if (!res.ok) throw new Error('Yenileme başarısız');
+        // trigger an immediate status check
+        await fetchStatus();
+      } catch (err) {
+        console.error('Yenileme hatası:', err);
+        alert('Yenileme başarısız oldu. Konsolu kontrol edin.');
+      } finally {
+        btnRefreshAuth.disabled = false;
+        btnRefreshAuth.textContent = '🔄 Yeni QR Kod';
+      }
+    }
+
+    // Buttons
+    btnRefreshPage.addEventListener('click', () => location.reload());
+    btnRefreshAuth.addEventListener('click', refreshAuth);
+
+    // Start polling loop (no aggressive constant interval)
+    fetchStatus();
   </script>
 </body>
 </html>
